@@ -80,3 +80,11 @@ class ResetPasswordAPIView(APIView):
             return Response({'error': 'Invalid or expired token.'}, status=status.HTTP_400_BAD_REQUEST)
 
 # In urls.py
+        
+
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+from api.serializers.user import CustomTokenObtainPairSerializer
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer

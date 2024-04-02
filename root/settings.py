@@ -141,12 +141,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Django REST Framework settings
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',  # For browsable API
-        'rest_framework.authentication.BasicAuthentication',    # For API clients
+        # 'rest_framework.authentication.SessionAuthentication',  # For browsable API
+        # 'rest_framework.authentication.BasicAuthentication',    # For API clients
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',  # Restrict access to authenticated users
-    # ),
+    'DEFAULT_PERMISSION_CLASSES': (   
+        'rest_framework.permissions.IsAuthenticated',  # Restrict access to authenticated users
+    ),
 }
 
 EMAIL_BACKEND = env('EMAIL_BACKEND')
@@ -159,3 +160,25 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_CREDENTIALS = True
+
+# settings.py
+
+AUTHENTICATION_BACKENDS = [
+    'user.authentication.CustomAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',  # Default authentication backend
+]
+
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+}
